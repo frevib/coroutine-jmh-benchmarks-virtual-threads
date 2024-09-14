@@ -1,5 +1,6 @@
 package com.eventloopsoftware
 
+import io.ktor.server.netty.*
 import kotlinx.coroutines.*
 import org.openjdk.jmh.annotations.*
 import java.lang.Thread.sleep
@@ -21,13 +22,16 @@ import kotlin.coroutines.EmptyCoroutineContext
 open class DispatchersContextSwitchBenchmark {
 
     private val CORES_COUNT = Runtime.getRuntime().availableProcessors()
-    private val nCoroutines = 10000
+
+    @Param("100000")
+    private var nCoroutines = 1
     private val delayTimeMs = 10L
     private val nRepeatDelay = 10
 
     private val fjp = ForkJoinPool.commonPool().asCoroutineDispatcher()
     private val ftp = Executors.newFixedThreadPool(CORES_COUNT - 1).asCoroutineDispatcher()
-    private val vtp = Executors.newVirtualThreadPerTaskExecutor().asCoroutineDispatcher()
+    private val vtDispatcher = Executors.newVirtualThreadPerTaskExecutor().asCoroutineDispatcher()
+    private val nettyEventLoopGroup = EventLoopGroupProxy.create(CORES_COUNT - 1).asCoroutineDispatcher()
 
     @TearDown
     fun teardown() {
@@ -57,7 +61,9 @@ open class DispatchersContextSwitchBenchmark {
     fun coroutinesFtpDispatcher() = runBenchmark(ftp)
 
     @Benchmark
-    fun coroutinesVtDispatcher() = runBenchmark(vtp)
+    fun coroutinesVtDispatcher() = runBenchmark(vtDispatcher)
+    @Benchmark
+    fun coroutinesEventloopGroupDispatcher() = runBenchmark(nettyEventLoopGroup)
 
     @Benchmark
     fun coroutinesBlockingDispatcher() = runBenchmark(EmptyCoroutineContext)

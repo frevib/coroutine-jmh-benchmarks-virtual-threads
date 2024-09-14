@@ -19,6 +19,8 @@ dependencies {
     implementation("org.openjdk.jmh:jmh-core:1.37")
     implementation("org.openjdk.jmh:jmh-generator-annprocess:1.37")
 
+    implementation("io.ktor:ktor-server-netty:2.3.12")
+
     kapt("org.openjdk.jmh:jmh-generator-annprocess:1.37")
 //    ksp("org.openjdk.jmh:jmh-generator-annprocess:1.37") // not working with ksp
 
