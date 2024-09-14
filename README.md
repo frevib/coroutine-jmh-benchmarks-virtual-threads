@@ -12,4 +12,4 @@ benchmark for Java Virtual Threads.
 
 ### Using https://github.com/artyushov/idea-jmh-plugin
 
-Press "play button next to test"
+Press "play" button next to test in Intellij
